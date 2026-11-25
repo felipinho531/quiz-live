@@ -1369,6 +1369,78 @@ updateTimer = function() {
 time = 15;
 updateTimer();
 </script>
+<script>
+
+function salvarRankings() {
+    localStorage.setItem(
+        "quizLiveRanking",
+        JSON.stringify([...quizScores])
+    );
+
+    localStorage.setItem(
+        "quizLiveApoiadores",
+        JSON.stringify([...giftScores])
+    );
+}
+
+function carregarRankings() {
+    try {
+        const quiz = JSON.parse(
+            localStorage.getItem("quizLiveRanking") || "[]"
+        );
+
+        const presentes = JSON.parse(
+            localStorage.getItem("quizLiveApoiadores") || "[]"
+        );
+
+        quiz.forEach(([id, dados]) => {
+            quizScores.set(id, dados);
+        });
+
+        presentes.forEach(([id, dados]) => {
+            giftScores.set(id, dados);
+        });
+
+        updateRankings();
+
+    } catch (erro) {
+        console.error("Erro ao carregar rankings", erro);
+    }
+}
+
+const atualizarRankingOriginal = updateRankings;
+
+updateRankings = function() {
+    atualizarRankingOriginal();
+    salvarRankings();
+};
+
+carregarRankings();
+
+const botaoZerar = document.createElement("button");
+
+botaoZerar.textContent = "Zerar rankings";
+botaoZerar.style.background = "#ff3344";
+botaoZerar.style.color = "white";
+
+botaoZerar.onclick = function() {
+
+    if (!confirm("Deseja realmente zerar os dois rankings?")) {
+        return;
+    }
+
+    quizScores.clear();
+    giftScores.clear();
+
+    $("quizRanking").textContent = "Aguardando jogadores";
+    $("giftRanking").textContent = "Aguardando presentes";
+
+    salvarRankings();
+};
+
+$("testPanel").appendChild(botaoZerar);
+
+</script>
     
 </body>
 </html>
