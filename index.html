@@ -1104,6 +1104,244 @@ endQuestion = async function() {
 };
 
 </script>
+<style>
+
+body {
+    background: #02030c;
+}
+
+.live {
+    position: relative;
+    max-width: 480px;
+    min-height: 100vh;
+    overflow: hidden;
+    background:
+        radial-gradient(ellipse at 10% 10%, #6020ab55, transparent 50%),
+        radial-gradient(ellipse at 90% 60%, #006aff55, transparent 50%),
+        linear-gradient(160deg, #080b25, #030411);
+    background-size: 150% 150%;
+    animation: backgroundMove 12s ease infinite;
+}
+
+@keyframes backgroundMove {
+    0%, 100% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+}
+
+.logo {
+    font-size: 54px;
+    font-weight: 1000;
+    letter-spacing: -2px;
+    background: linear-gradient(
+        90deg,
+        #ffffff,
+        #00eaff,
+        #b56cff
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-shadow: none;
+    filter: drop-shadow(0 0 18px #00aaff88);
+}
+
+.subtitle {
+    text-transform: uppercase;
+    font-size: 12px;
+    letter-spacing: 4px;
+    color: #b8baff;
+}
+
+.badge {
+    background: linear-gradient(90deg, #ff1744, #ff527a);
+    box-shadow: 0 0 20px #ff174455;
+    font-size: 12px;
+}
+
+#round {
+    color: #b5caff;
+    font-weight: bold;
+    font-size: 12px;
+}
+
+.category {
+    background: #ffffff09;
+    border: 1px solid #ffffff22;
+    border-radius: 30px;
+    width: fit-content;
+    margin: 10px auto;
+    padding: 10px 20px;
+    color: #ffe36b;
+    font-size: 13px;
+}
+
+.timer {
+    width: 135px;
+    height: 135px;
+    background: radial-gradient(
+        circle,
+        #203169,
+        #080d25
+    );
+    font-size: 60px;
+    border-width: 7px;
+    box-shadow:
+        0 0 25px #00eaff55,
+        inset 0 0 30px #00eaff22;
+    transition: border-color .3s;
+}
+
+.progress {
+    height: 12px;
+    border: 1px solid #ffffff22;
+}
+
+#bar {
+    box-shadow: 0 0 15px #00eaff;
+}
+
+.question {
+    min-height: 180px;
+    border: 1px solid #8b7bff88;
+    background: linear-gradient(
+        145deg,
+        #192652,
+        #11152f
+    );
+    border-radius: 25px;
+    box-shadow:
+        0 10px 35px #00000066,
+        inset 0 1px 0 #ffffff22;
+    font-size: clamp(23px, 6vw, 30px);
+    line-height: 1.3;
+}
+
+.question.new-question {
+    animation: questionEnter .45s ease;
+}
+
+@keyframes questionEnter {
+    from {
+        opacity: .3;
+        transform: translateY(12px) scale(.97);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.instruction {
+    color: #00eaff;
+    font-weight: bold;
+    font-size: 15px;
+}
+
+.feedback {
+    text-shadow: 0 0 15px #00ff7755;
+    overflow-wrap: anywhere;
+}
+
+.ranking {
+    background: linear-gradient(
+        145deg,
+        #161d3b,
+        #0c1128
+    );
+    border: 1px solid #5550aa88;
+    border-radius: 20px;
+    box-shadow: 0 8px 20px #00000044;
+}
+
+.ranking h2 {
+    font-size: 13px;
+    letter-spacing: 1px;
+}
+
+.player {
+    margin: 6px 0;
+    padding: 10px 6px;
+    border-radius: 8px;
+    background: #ffffff06;
+}
+
+.player:nth-child(1) {
+    color: #ffe36b;
+    background: #ffd70019;
+    border: 1px solid #ffd70044;
+}
+
+.player:nth-child(2) {
+    color: #e4edff;
+    background: #c0c0c019;
+}
+
+.player:nth-child(3) {
+    color: #ffb47a;
+    background: #cd7f3219;
+}
+
+.gift {
+    background: linear-gradient(
+        135deg,
+        #571bc9,
+        #ff168b,
+        #7438ff
+    );
+    box-shadow:
+        0 0 60px #ff25bc99,
+        inset 0 0 30px #ffffff22;
+}
+
+#start {
+    background: linear-gradient(
+        90deg,
+        #00eaff,
+        #6577ff
+    );
+    color: #ffffff;
+    font-size: 20px;
+    border-radius: 15px;
+    box-shadow: 0 0 25px #00aaff55;
+}
+
+#start:hover {
+    filter: brightness(1.2);
+}
+
+.footer {
+    letter-spacing: 2px;
+    font-size: 10px;
+}
+
+</style>
+
+<script>
+
+const questionBox = document.getElementById("question");
+
+const questionAnimation = new MutationObserver(() => {
+
+    questionBox.classList.remove("new-question");
+
+    void questionBox.offsetWidth;
+
+    questionBox.classList.add("new-question");
+
+});
+
+questionAnimation.observe(questionBox, {
+    childList: true,
+    characterData: true,
+    subtree: true
+});
+
+</script>
     
 </body>
 </html>
