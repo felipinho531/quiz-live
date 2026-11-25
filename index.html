@@ -1656,9 +1656,10 @@ function falarVideo(texto) {
         const vozes = speechSynthesis.getVoices();
 
         const masculina = vozes.find(v =>
-            /Antonio|Daniel/i.test(v.name)
-        );
-
+    v.lang === "pt-BR" && !v.localService
+) || vozes.find(v =>
+    /Antonio|Daniel/i.test(v.name)
+);
         if (masculina) voz.voice = masculina;
 
         voz.onend = resolve;
