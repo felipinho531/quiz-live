@@ -145,7 +145,6 @@ body {
 .player {
     display: flex;
     justify-content: space-between;
-    align-items: center;
     gap: 5px;
     padding: 10px 0;
     border-bottom: 1px solid #ffffff18;
@@ -155,10 +154,6 @@ body {
 .player span {
     overflow: hidden;
     text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-.player strong {
     white-space: nowrap;
 }
 
@@ -193,14 +188,8 @@ body {
 }
 
 @keyframes giftAnimation {
-    from {
-        opacity: 0;
-        scale: .6;
-    }
-    to {
-        opacity: 1;
-        scale: 1;
-    }
+    from { opacity: 0; scale: .6; }
+    to { opacity: 1; scale: 1; }
 }
 
 button, input {
@@ -250,7 +239,6 @@ button {
     color: #8999c2;
     font-size: 12px;
 }
-
 </style>
 </head>
 
@@ -259,15 +247,12 @@ button {
 <div class="live">
 
     <div class="header">
-        <span class="badge" id="status">● DEMONSTRAÇÃO</span>
+        <span class="badge">● DEMONSTRAÇÃO</span>
         <span id="round">RODADA 0</span>
     </div>
 
     <div class="logo">QUIZ LIVE</div>
-
-    <div class="subtitle">
-        Você consegue acertar?
-    </div>
+    <div class="subtitle" id="subtitle">Você consegue acertar?</div>
 
     <div class="category" id="category">
         DESAFIO DE CONHECIMENTOS
@@ -311,74 +296,45 @@ button {
         ▶ INICIAR QUIZ
     </button>
 
-    <div class="footer">
-        QUIZ LIVE • DESAFIO AO VIVO
+    <div class="footer" id="totalQuestions">
+        Carregando perguntas...
     </div>
 
     <div id="testPanel">
-        <h3>Painel privado de testes</h3>
+        <h3>Painel de testes</h3>
 
         <input id="testName" placeholder="Nome">
-
         <input id="testAnswer" placeholder="Resposta">
 
-        <button onclick="testAnswer()">
+        <button onclick="simulateAnswer()">
             Simular comentário
         </button>
 
         <input id="testGift" placeholder="Presente">
 
-        <input id="testValue" type="number" min="1"
-        value="1" placeholder="Pontos do presente">
+        <input id="testValue" type="number"
+               min="1" value="1">
 
-        <button onclick="testGift()">
+        <button onclick="simulateGift()">
             Simular presente
         </button>
 
         <button onclick="toggleMusic()">
             Ligar / desligar música
         </button>
-
     </div>
 
 </div>
 
 <div class="gift" id="giftAlert"></div>
 
+<script src="perguntas.js"></script>
+
 <script>
 
-const questions = [
-    ["GEOGRAFIA","Qual é a capital do Brasil?",["Brasília"]],
-    ["FUTEBOL","Qual país venceu a Copa do Mundo de 2002?",["Brasil"]],
-    ["MATEMÁTICA","Quanto é 8 vezes 7?",["56","cinquenta e seis"]],
-    ["POKÉMON","Qual Pokémon amarelo acompanha Ash?",["Pikachu"]],
-    ["ANIMAIS","Qual é o maior animal terrestre vivo?",["Elefante","Elefante africano","Elefante-da-savana"]],
-    ["ESPAÇO","Qual é o planeta vermelho?",["Marte"]],
-    ["FILMES","Qual é o nome do cowboy de Toy Story?",["Woody"]],
-    ["GEOGRAFIA","Qual é o maior oceano do mundo?",["Pacífico","Oceano Pacífico"]],
-    ["MATEMÁTICA","Quanto é 100 dividido por 4?",["25","vinte e cinco"]],
-    ["ANIMAIS","Qual é o animal terrestre mais rápido?",["Guepardo","Chita"]],
-    ["CONHECIMENTOS GERAIS","Qual objeto circular permite que um carro se movimente?",["Roda","Rodas"]],
-    ["ESPAÇO","Qual é o maior planeta do Sistema Solar?",["Júpiter"]],
-    ["FUTEBOL","Quantos jogadores cada equipe tem no início de uma partida de futebol de campo, se estiver completa?",["11","onze"]],
-    ["ANIMAIS","Qual animal é conhecido como o rei da selva?",["Leão"]],
-    ["GEOGRAFIA","Em qual país fica a Torre Eiffel?",["França"]],
-    ["MATEMÁTICA","Quanto é 12 vezes 12?",["144","cento e quarenta e quatro"]],
-    ["CIÊNCIAS","Qual gás os humanos precisam respirar para sobreviver?",["Oxigênio"]],
-    ["POKÉMON","Qual Pokémon evolui para Charizard?",["Charmeleon"]],
-    ["FILMES","Qual é o nome do ogro verde dos filmes da DreamWorks?",["Shrek"]],
-    ["GEOGRAFIA","Qual é a capital da Argentina?",["Buenos Aires"]],
-    ["MATEMÁTICA","Qual é a metade de 90?",["45","quarenta e cinco"]],
-    ["ANIMAIS","Qual animal possui o pescoço muito comprido e manchas?",["Girafa"]],
-    ["ESPAÇO","Qual estrela ilumina a Terra durante o dia?",["Sol","O Sol"]],
-    ["CONHECIMENTOS GERAIS","Quantos dias tem uma semana?",["7","sete"]],
-    ["CIÊNCIAS","Qual órgão bombeia o sangue pelo corpo?",["Coração"]],
-    ["FUTEBOL","Qual jogador brasileiro ficou conhecido como Rei do Futebol?",["Pelé"]],
-    ["MATEMÁTICA","Quanto é 9 vezes 9?",["81","oitenta e um"]],
-    ["ANIMAIS","Qual animal produz mel?",["Abelha","Abelhas"]],
-    ["GEOGRAFIA","Qual é a capital de Portugal?",["Lisboa"]],
-    ["ESPAÇO","Qual é o satélite natural da Terra?",["Lua","A Lua"]]
-];
+const questions = typeof bancoPerguntas !== "undefined"
+    ? bancoPerguntas
+    : [];
 
 const quizScores = new Map();
 const giftScores = new Map();
@@ -386,6 +342,7 @@ const answered = new Set();
 
 let deck = [];
 let current;
+let lastQuestion;
 let time = 30;
 let round = 0;
 let active = false;
@@ -398,6 +355,12 @@ let musicTimer;
 let musicGain;
 let musicIndex = 0;
 let giftTimer;
+
+const $ = id => document.getElementById(id);
+
+$("totalQuestions").textContent =
+    questions.length.toLocaleString("pt-BR") +
+    " PERGUNTAS DISPONÍVEIS";
 
 function normalize(text) {
     return String(text)
@@ -414,13 +377,11 @@ function speak(text, urgent = false) {
     if (!("speechSynthesis" in window)) return;
 
     const voice = new SpeechSynthesisUtterance(text);
+
     const voices = speechSynthesis.getVoices();
 
-    const ptVoices = voices.filter(v =>
-        /^pt[-_]BR$/i.test(v.lang)
-    );
-
-    const selected = ptVoices.find(v =>
+    const selected = voices.find(v =>
+        /^pt[-_]BR$/i.test(v.lang) &&
         /Antonio|Antônio|Daniel|Felipe|Male/i.test(v.name)
     );
 
@@ -445,7 +406,9 @@ function speak(text, urgent = false) {
 }
 
 function initAudio() {
+
     if (!audio) {
+
         const AudioContextClass =
             window.AudioContext || window.webkitAudioContext;
 
@@ -454,7 +417,9 @@ function initAudio() {
         audio = new AudioContextClass();
 
         musicGain = audio.createGain();
+
         musicGain.gain.value = 0.065;
+
         musicGain.connect(audio.destination);
     }
 
@@ -499,9 +464,9 @@ function effect(type) {
         ? [660,880,1047]
         : [440];
 
-    notes.forEach((note, index) => {
-        tone(note, 0.20, 0.11,
-            audio.destination, index * 0.09);
+    notes.forEach((note,index) => {
+        tone(note,0.20,0.11,
+            audio.destination,index * 0.09);
     });
 }
 
@@ -510,23 +475,23 @@ function startMusic() {
     if (!audio || musicTimer || !musicEnabled) return;
 
     const notes = [
-        261.63, 329.63, 392, 329.63,
-        220, 261.63, 329.63, 261.63,
-        174.61, 220, 261.63, 220,
-        196, 246.94, 293.66, 246.94
+        261.63,329.63,392,329.63,
+        220,261.63,329.63,261.63,
+        174.61,220,261.63,220,
+        196,246.94,293.66,246.94
     ];
 
     musicTimer = setInterval(() => {
 
         const index = musicIndex++ % notes.length;
 
-        tone(notes[index], 0.22, 0.65, musicGain);
+        tone(notes[index],0.22,0.65,musicGain);
 
         if (index % 4 === 0) {
-            tone(notes[index] / 2, 0.55, 0.5, musicGain);
+            tone(notes[index]/2,0.55,0.5,musicGain);
         }
 
-    }, 280);
+    },280);
 }
 
 function toggleMusic() {
@@ -546,53 +511,69 @@ function startGame() {
 
     if (started) return;
 
+    if (!questions.length) {
+        $("question").textContent =
+            "Erro ao carregar perguntas.js";
+        return;
+    }
+
     started = true;
 
     initAudio();
     startMusic();
 
-    document.getElementById("start").style.display = "none";
+    $("start").style.display = "none";
 
     nextQuestion();
 }
 
+function refillDeck() {
+
+    deck = [...questions];
+
+    for (let i = deck.length - 1; i > 0; i--) {
+
+        const j = Math.floor(Math.random() * (i + 1));
+
+        [deck[i],deck[j]] = [deck[j],deck[i]];
+    }
+
+    if (
+        deck.length > 1 &&
+        deck[deck.length - 1][1] === lastQuestion
+    ) {
+        [deck[0],deck[deck.length - 1]] =
+        [deck[deck.length - 1],deck[0]];
+    }
+}
+
 function nextQuestion() {
 
-    if (deck.length === 0) {
-
-        deck = [...questions];
-
-        for (let i = deck.length - 1; i > 0; i--) {
-
-            const j = Math.floor(Math.random() * (i + 1));
-
-            [deck[i], deck[j]] = [deck[j], deck[i]];
-        }
-    }
+    if (!deck.length) refillDeck();
 
     current = deck.pop();
 
+    lastQuestion = current[1];
+
     round++;
+
     answered.clear();
 
     time = 30;
     active = true;
     deadline = Date.now() + 30000;
 
-    document.getElementById("round").textContent =
-        "RODADA " + round;
+    $("round").textContent = "RODADA " + round;
 
-    document.getElementById("category").textContent =
-        current[0];
+    $("category").textContent = current[0];
 
-    document.getElementById("question").textContent =
-        current[1];
+    $("question").textContent = current[1];
 
-    document.getElementById("feedback").textContent = "";
+    $("feedback").textContent = "";
 
     updateTimer();
 
-    const introductions = [
+    const intros = [
         "Valendo!",
         "Bora para mais uma!",
         "Atenção, galera!",
@@ -600,18 +581,18 @@ function nextQuestion() {
         "Preparados? Lá vai!"
     ];
 
-    const intro = introductions[
-        Math.floor(Math.random() * introductions.length)
+    const intro = intros[
+        Math.floor(Math.random() * intros.length)
     ];
 
-    speak(intro + " " + current[1], true);
+    speak(intro + " " + current[1],true);
 
     clearInterval(interval);
 
     interval = setInterval(() => {
 
         const remaining = Math.max(
-            0, Math.ceil((deadline - Date.now()) / 1000)
+            0,Math.ceil((deadline-Date.now())/1000)
         );
 
         if (remaining === time) return;
@@ -621,7 +602,7 @@ function nextQuestion() {
         updateTimer();
 
         if (time === 5) {
-            speak("Atenção! Últimos cinco segundos!", true);
+            speak("Últimos cinco segundos!",true);
         }
 
         if (time > 0 && time <= 5) {
@@ -630,17 +611,14 @@ function nextQuestion() {
 
         if (time === 0) endQuestion();
 
-    }, 100);
+    },100);
 }
 
 function updateTimer() {
 
-    const timer = document.getElementById("timer");
-    const bar = document.getElementById("bar");
+    $("timer").textContent = time;
 
-    timer.textContent = time;
-
-    bar.style.width = (time / 30 * 100) + "%";
+    $("bar").style.width = (time/30*100) + "%";
 
     const color = time <= 5
         ? "#ff3344"
@@ -648,33 +626,35 @@ function updateTimer() {
         ? "#ffae00"
         : "#00eaff";
 
-    timer.style.borderColor = color;
-    bar.style.background = color;
+    $("timer").style.borderColor = color;
+    $("bar").style.background = color;
 }
 
-function addPoints(map, name, points) {
+function addPoints(map,name,points) {
 
     const key = normalize(name);
+
     const previous = map.get(key);
 
-    map.set(key, {
-        name: name,
-        points: (previous?.points || 0) + points
+    map.set(key,{
+        name:name,
+        points:(previous?.points || 0)+points
     });
 }
 
-function receiveComment(name, message) {
+function receiveComment(name,message) {
 
     if (!active || Date.now() >= deadline) return;
 
-    name = String(name).trim().slice(0, 40);
+    name = String(name).trim().slice(0,40);
 
     if (!name) return;
 
     const key = normalize(name);
-    const answer = normalize(message);
 
     if (answered.has(key)) return;
+
+    const answer = normalize(message);
 
     const correct = current[2].some(a =>
         normalize(a) === answer
@@ -684,45 +664,47 @@ function receiveComment(name, message) {
 
     answered.add(key);
 
-    addPoints(quizScores, name, 10);
+    addPoints(quizScores,name,10);
 
-    document.getElementById("feedback").textContent =
+    $("feedback").textContent =
         "🔥 " + name + " acertou! +10";
 
     effect("correct");
 
-    if (!speechSynthesis.speaking && time > 5) {
+    if (
+        "speechSynthesis" in window &&
+        !speechSynthesis.speaking &&
+        time > 5
+    ) {
         speak("Boa, " + name + "! Você acertou!");
     }
 
     updateRankings();
 }
 
-function receiveGift(name, gift, value) {
+function receiveGift(name,gift,value) {
 
-    name = String(name).trim().slice(0, 40);
-    gift = String(gift).trim().slice(0, 40);
+    name = String(name).trim().slice(0,40);
+    gift = String(gift).trim().slice(0,40);
 
     if (!name || !gift) return;
 
     const points = Math.max(
-        1, Math.min(1000000, Math.floor(Number(value) || 1))
+        1,Math.min(1000000,Math.floor(Number(value)||1))
     );
 
-    addPoints(giftScores, name, points);
+    addPoints(giftScores,name,points);
 
-    const alert = document.getElementById("giftAlert");
-
-    alert.textContent =
+    $("giftAlert").textContent =
         "🎁 " + name + " enviou " + gift + "!";
 
-    alert.classList.add("show");
+    $("giftAlert").classList.add("show");
 
     clearTimeout(giftTimer);
 
     giftTimer = setTimeout(() => {
-        alert.classList.remove("show");
-    }, 4000);
+        $("giftAlert").classList.remove("show");
+    },4000);
 
     effect("gift");
 
@@ -742,7 +724,7 @@ function endQuestion() {
 
     const correct = current[2][0];
 
-    document.getElementById("feedback").textContent =
+    $("feedback").textContent =
         "✅ RESPOSTA: " + correct;
 
     effect("correct");
@@ -751,7 +733,7 @@ function endQuestion() {
 
         speak(
             "Nossa! Ninguém acertou! A resposta correta é " +
-            correct, true
+            correct,true
         );
 
     } else {
@@ -763,27 +745,28 @@ function endQuestion() {
         );
     }
 
-    setTimeout(nextQuestion, 6500);
+    setTimeout(nextQuestion,6500);
 }
 
-function renderRanking(map, id) {
+function renderRanking(map,id) {
 
     const sorted = [...map.values()]
-        .sort((a,b) => b.points - a.points)
+        .sort((a,b)=>b.points-a.points)
         .slice(0,5);
 
     if (!sorted.length) return;
 
-    const element = document.getElementById(id);
+    const element = $(id);
 
     element.className = "";
     element.replaceChildren();
 
     const medals = ["🥇","🥈","🥉","4º","5º"];
 
-    sorted.forEach((player,index) => {
+    sorted.forEach((player,index)=>{
 
         const row = document.createElement("div");
+
         row.className = "player";
 
         const name = document.createElement("span");
@@ -796,56 +779,61 @@ function renderRanking(map, id) {
         points.textContent = player.points;
 
         row.append(name,points);
-        element.appendChild(row);
 
+        element.appendChild(row);
     });
 }
 
 function updateRankings() {
 
     renderRanking(quizScores,"quizRanking");
+
     renderRanking(giftScores,"giftRanking");
 }
 
-function testAnswer() {
+function simulateAnswer() {
 
     receiveComment(
-        document.getElementById("testName").value,
-        document.getElementById("testAnswer").value
+        $("testName").value,
+        $("testAnswer").value
     );
 
-    document.getElementById("testAnswer").value = "";
+    $("testAnswer").value = "";
 }
 
-function testGift() {
+function simulateGift() {
 
     receiveGift(
-        document.getElementById("testName").value,
-        document.getElementById("testGift").value,
-        document.getElementById("testValue").value
+        $("testName").value,
+        $("testGift").value,
+        $("testValue").value
     );
 }
 
-document.addEventListener("keydown", event => {
+document.addEventListener("keydown",event=>{
 
-    if (event.ctrlKey && event.shiftKey &&
-        event.key.toLowerCase() === "p") {
+    if (
+        event.ctrlKey &&
+        event.shiftKey &&
+        event.key.toLowerCase()==="p"
+    ) {
 
         event.preventDefault();
 
-        const panel =
-            document.getElementById("testPanel");
+        const panel = $("testPanel");
 
         panel.style.display =
-            panel.style.display === "block"
+            panel.style.display==="block"
             ? "none"
             : "block";
     }
-
 });
 
-if (new URLSearchParams(location.search).get("teste") === "1") {
-    document.getElementById("testPanel").style.display = "block";
+if (
+    new URLSearchParams(location.search)
+        .get("teste")==="1"
+) {
+    $("testPanel").style.display = "block";
 }
 
 </script>
