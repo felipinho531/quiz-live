@@ -944,6 +944,166 @@ setInterval(() => {
 
 }, 8500);
 </script>
+<script>
+
+// CORREÇÃO DA SINCRONIZAÇÃO
+
+let narrandoRodada = false;
+
+function narrarSincronizado(texto) {
+
+    return new Promise(resolve => {
+
+        speechSynthesis.cancel();
+
+        filaDeFalas.length = 0;
+        falando = false;
+
+        const fala = new SpeechSynthesisUtterance(texto);
+
+        fala.lang = "pt-BR";
+        fala.rate = 1.15;
+        fala.pitch = 1.02;
+        fala.volume = 1;
+
+        if (melhorVoz) {
+            fala.voice = melhorVoz;
+        }
+
+        narrandoRodada = true;
+        falando = true;
+
+        if (musicGain) {
+            musicGain.gain.value = 0.015;
+        }
+
+        fala.onend = fala.onerror = () => {
+
+            narrandoRodada = false;
+            falando = false;
+
+            if (musicGain) {
+                musicGain.gain.value = 0.065;
+            }
+
+            resolve();
+        };
+
+        speechSynthesis.speak(fala);
+
+    });
+}
+
+nextQuestion = async function() {
+
+    clearInterval(interval);
+
+    active = false;
+
+    filaDeFalas.length = 0;
+
+    if (!deck.length) refillDeck();
+
+    current = deck.pop();
+
+    lastQuestion = current[1];
+
+    round++;
+
+    answered.clear();
+
+    time = 30;
+
+    $("round").textContent = "RODADA " + round;
+    $("category").textContent = current[0];
+    $("question").textContent = current[1];
+    $("feedback").textContent = "";
+
+    updateTimer();
+
+    const chamadas = [
+        "Bora pra próxima!",
+        "Atenção, galera!",
+        "Quero ver quem sabe essa!",
+        "Preparados? Lá vai!",
+        "Mais um desafio!"
+    ];
+
+    const chamada = chamadas[
+        Math.floor(Math.random() * chamadas.length)
+    ];
+
+    await narrarSincronizado(
+        chamada + " " + current[1]
+    );
+
+    active = true;
+
+    deadline = Date.now() + 30000;
+
+    interval = setInterval(() => {
+
+        const restante = Math.max(
+            0,
+            Math.ceil((deadline - Date.now()) / 1000)
+        );
+
+        if (restante === time) return;
+
+        time = restante;
+
+        updateTimer();
+
+        if (time === 5 && !falando) {
+            speak("Tá acabando o tempo!");
+        }
+
+        if (time > 0 && time <= 5) {
+            effect("tick");
+        }
+
+        if (time === 0) {
+            endQuestion();
+        }
+
+    }, 100);
+};
+
+endQuestion = async function() {
+
+    clearInterval(interval);
+
+    active = false;
+
+    const resposta = current[2][0];
+
+    $("feedback").textContent =
+        "✅ RESPOSTA: " + resposta;
+
+    effect("correct");
+
+    let frase;
+
+    if (answered.size === 0) {
+
+        frase =
+            "Essa foi difícil, hein! A resposta correta é " +
+            resposta + "!";
+
+    } else {
+
+        frase =
+            "Acabou o tempo! A resposta é " +
+            resposta +
+            "! Parabéns pra quem acertou!";
+    }
+
+    await narrarSincronizado(frase);
+
+    setTimeout(nextQuestion, 2000);
+};
+
+</script>
     
 </body>
 </html>
