@@ -2540,6 +2540,108 @@ function fecharPainelQuiz() {
     document.getElementById("painelAssistente").hidden = true;
 }
 </script>
+<style>
+#temaVideoAssistente {
+    width: 100%;
+    padding: 14px;
+    background: #080b19;
+    color: white;
+    border: 1px solid #865dff;
+    border-radius: 10px;
+    margin: 10px 0;
+}
+
+#gerarVideoAssistente {
+    width: 100%;
+    background: linear-gradient(90deg,#713bff,#ff3060) !important;
+    font-size: 18px;
+    font-weight: bold;
+    padding: 16px !important;
+}
+</style>
+
+<script>
+let temaEscolhidoVideo = "";
+
+const cardGerador = document
+    .getElementById("ideiaQuiz")
+    .closest(".assistenteCard");
+
+cardGerador.innerHTML = `
+    <h2>🎬 Gerador de vídeos</h2>
+
+    <p>Escolha o tema do próximo vídeo:</p>
+
+    <select id="temaVideoAssistente">
+        <option value="">🎲 Aleatório</option>
+        <option value="FUTEBOL">⚽ Futebol</option>
+        <option value="GEOGRAFIA">🌎 Geografia</option>
+        <option value="ANIMAIS">🐾 Animais</option>
+        <option value="JOGOS">🎮 Jogos</option>
+        <option value="FILMES">🎬 Filmes e desenhos</option>
+        <option value="CONHECIMENTOS GERAIS">🧠 Conhecimentos gerais</option>
+        <option value="CIÊNCIAS">🔬 Ciências</option>
+        <option value="ESPAÇO">🚀 Espaço</option>
+        <option value="MATEMÁTICA">🧮 Matemática</option>
+    </select>
+
+    <button id="gerarVideoAssistente"
+        onclick="gerarGravarAssistente()">
+        🎬 Gerar e gravar vídeo
+    </button>
+
+    <p>3 perguntas • Narração • Música • Cronômetro</p>
+`;
+
+function gerarIdeiaQuiz() {}
+
+const bancoCompletoVideo = [...bancoPerguntas];
+
+async function gerarGravarAssistente() {
+
+    temaEscolhidoVideo = document
+        .getElementById("temaVideoAssistente").value;
+
+    const selecionadas = temaEscolhidoVideo
+        ? bancoCompletoVideo.filter(
+            p => p[0] === temaEscolhidoVideo
+        )
+        : bancoCompletoVideo;
+
+    if (selecionadas.length < 3) {
+        alert("Não existem perguntas suficientes nesse tema.");
+        return;
+    }
+
+    const tema = temaEscolhidoVideo || "CONHECIMENTOS GERAIS";
+
+    document.getElementById("descricaoQuiz").textContent =
+        "Você consegue acertar as 3 perguntas de " +
+        tema.toLowerCase() +
+        "? 🧠 Comente sua pontuação e siga para mais quizzes! " +
+        "#quiz #quizbrasil #desafio #quizlive #" +
+        tema.toLowerCase()
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "")
+            .replace(/\s/g, "");
+
+    bancoPerguntas.splice(
+        0, bancoPerguntas.length,
+        ...selecionadas
+    );
+
+    fecharPainelQuiz();
+
+    try {
+        await gravarVideoQuiz();
+    } finally {
+        bancoPerguntas.splice(
+            0, bancoPerguntas.length,
+            ...bancoCompletoVideo
+        );
+    }
+}
+</script>
     
 </body>
 </html>
