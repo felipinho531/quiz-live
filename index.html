@@ -837,6 +837,113 @@ if (
 }
 
 </script>
+<script>
+let melhorVoz;
+let filaDeFalas = [];
+let falando = false;
 
+function carregarVoz() {
+    const vozes = speechSynthesis.getVoices();
+
+    melhorVoz = vozes.find(v =>
+        /Antonio.*Natural/i.test(v.name)
+    ) || vozes.find(v =>
+        /Antonio|Antônio|Daniel|Felipe/i.test(v.name) &&
+        v.lang === "pt-BR"
+    ) || vozes.find(v =>
+        v.lang === "pt-BR"
+    );
+}
+
+carregarVoz();
+
+speechSynthesis.onvoiceschanged = carregarVoz;
+
+speak = function(texto, urgente = false) {
+
+    if (urgente) {
+        filaDeFalas.unshift(texto);
+    } else {
+        filaDeFalas.push(texto);
+    }
+
+    reproduzirFala();
+};
+
+function reproduzirFala() {
+
+    if (falando || !filaDeFalas.length) return;
+
+    falando = true;
+
+    const texto = filaDeFalas.shift();
+    const fala = new SpeechSynthesisUtterance(texto);
+
+    fala.lang = "pt-BR";
+    fala.rate = 1.12 + Math.random() * 0.06;
+    fala.pitch = 0.95 + Math.random() * 0.10;
+    fala.volume = 1;
+
+    if (melhorVoz) {
+        fala.voice = melhorVoz;
+    }
+
+    if (musicGain) {
+        musicGain.gain.value = 0.015;
+    }
+
+    fala.onend = fala.onerror = function() {
+
+        falando = false;
+
+        if (musicGain) {
+            musicGain.gain.value = 0.065;
+        }
+
+        reproduzirFala();
+    };
+
+    speechSynthesis.speak(fala);
+}
+
+const comentariosApresentador = [
+    "Bora, galera! Quero ver quem sabe!",
+    "Essa eu quero ver!",
+    "Será que alguém vai acertar?",
+    "Pensa rápido, hein!",
+    "Tá fácil essa!",
+    "Quero ver quem manda bem!",
+    "Ainda dá tempo!",
+    "Capricha na resposta!",
+    "Vamos lá, pessoal!",
+    "Quem sabe essa?"
+];
+
+let ultimoComentario = "";
+
+setInterval(() => {
+
+    if (!active || falando || filaDeFalas.length) return;
+
+    if (time <= 6 || time >= 25) return;
+
+    let frase;
+
+    do {
+        frase = comentariosApresentador[
+            Math.floor(
+                Math.random() *
+                comentariosApresentador.length
+            )
+        ];
+    } while (frase === ultimoComentario);
+
+    ultimoComentario = frase;
+
+    speak(frase);
+
+}, 8500);
+</script>
+    
 </body>
 </html>
