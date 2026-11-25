@@ -2070,11 +2070,14 @@ async function gravarVideoQuiz() {
     try {
         capturaQuiz = await navigator.mediaDevices
             .getDisplayMedia({
-                video: {
-                    frameRate: 30
-                },
-                audio: true
-            });
+    video: {
+        frameRate: 30
+    },
+    audio: true,
+    preferCurrentTab: true,
+    selfBrowserSurface: "include",
+    surfaceSwitching: "exclude"
+});
 
         partesQuiz = [];
 
