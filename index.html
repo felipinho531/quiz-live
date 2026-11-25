@@ -2645,6 +2645,63 @@ async function gerarGravarAssistente() {
     }
 }
 </script>
+<style>
+body.gravandoQuiz,
+body.gravandoQuiz * {
+    cursor: none !important;
+}
+
+body.gravandoQuiz {
+    overflow: hidden !important;
+}
+
+body.gravandoQuiz #modoVideo {
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+}
+
+body.gravandoQuiz #modoVideo button {
+    display: none !important;
+}
+</style>
+
+<script>
+const capturarQuizOriginal =
+    navigator.mediaDevices.getDisplayMedia
+        .bind(navigator.mediaDevices);
+
+navigator.mediaDevices.getDisplayMedia =
+async function(opcoes) {
+
+    const stream = await capturarQuizOriginal({
+        ...opcoes,
+        preferCurrentTab: true,
+        selfBrowserSurface: "include",
+        video: {
+            frameRate: 30,
+            cursor: "never"
+        }
+    });
+
+    const track = stream.getVideoTracks()[0];
+
+    if (window.CropTarget && track.cropTo) {
+        try {
+            const alvo = await CropTarget.fromElement(
+                document.getElementById("modoVideo")
+            );
+
+            await track.cropTo(alvo);
+
+        } catch (erro) {
+            console.warn("Recorte indisponível", erro);
+        }
+    }
+
+    return stream;
+};
+</script>
     
 </body>
 </html>
