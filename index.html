@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quiz Live</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #050816;
+    color: white;
+}
+
+.container {
+    max-width: 460px;
+    min-height: 100vh;
+    margin: auto;
+    padding: 25px;
+    background: linear-gradient(160deg, #101b40, #050816);
+}
+
+.logo {
+    text-align: center;
+    font-size: 42px;
+    font-weight: 900;
+    color: #00eaff;
+    text-shadow: 0 0 25px #00eaff;
+}
+
+.subtitle {
+    text-align: center;
+    color: #a6b6d9;
+    margin-bottom: 30px;
+}
+
+.category {
+    text-align: center;
+    color: #ffd700;
+    font-weight: bold;
+    margin: 15px;
+}
+
+.timer {
+    width: 105px;
+    height: 105px;
+    border: 6px solid #00eaff;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    font-size: 42px;
+    font-weight: bold;
+    margin: 20px auto;
+    box-shadow: 0 0 25px #00eaff55;
+}
+
+.progress {
+    height: 9px;
+    background: #283451;
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+#bar {
+    height: 100%;
+    width: 100%;
+    background: #00eaff;
+    transition: width 0.3s;
+}
+
+.question {
+    min-height: 160px;
+    display: grid;
+    place-items: center;
+    text-align: center;
+    padding: 20px;
+    font-size: 27px;
+    font-weight: bold;
+    background: #ffffff0c;
+    border: 1px solid #ffffff22;
+    border-radius: 20px;
+    margin-top: 25px;
+}
+
+.instruction {
+    text-align: center;
+    color: #a6b6d9;
+    margin: 15px;
+}
+
+#feedback {
+    min-height: 50px;
+    text-align: center;
+    color: #4dff88;
+    font-size: 22px;
+    font-weight: bold;
+}
+
+.ranking {
+    background: #ffffff08;
+    padding: 20px;
+    border-radius: 20px;
+}
+
+.ranking h2 {
+    text-align: center;
+    color: #ffd700;
+}
+
+.player {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px;
+    border-bottom: 1px solid #ffffff18;
+}
+
+.controls {
+    margin-top: 25px;
+    padding-top: 20px;
+    border-top: 1px solid #ffffff22;
+}
+
+input, button {
+    width: 100%;
+    padding: 13px;
+    margin-bottom: 10px;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+}
+
+input {
+    background: #1c2948;
+    color: white;
+}
+
+button {
+    background: #00eaff;
+    color: #050816;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+button:disabled {
+    opacity: 0.4;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="logo">QUIZ LIVE</div>
+    <div class="subtitle">O desafio dos inteligentes</div>
+
+    <div class="category" id="category">CONHECIMENTOS GERAIS</div>
+
+    <div class="timer" id="timer">30</div>
+
+    <div class="progress">
+        <div id="bar"></div>
+    </div>
+
+    <div class="question" id="question">
+        Clique em iniciar para jogar!
+    </div>
+
+    <div class="instruction">
+        💬 Escreva a resposta no chat!
+    </div>
+
+    <div id="feedback"></div>
+
+    <div class="ranking">
+        <h2>🏆 TOP 10</h2>
+        <div id="ranking">Aguardando jogadores...</div>
+    </div>
+
+    <div class="controls">
+        <p>PAINEL DE TESTES</p>
+
+        <button id="start" onclick="startGame()">
+            ▶ Iniciar Quiz
+        </button>
+
+        <input id="username" placeholder="Nome do jogador">
+        <input id="answer" placeholder="Resposta">
+
+        <button onclick="sendAnswer()">
+            Enviar resposta
+        </button>
+    </div>
+
+</div>
+
+<script>
+
+const questions = [
+    {
+        category: "GEOGRAFIA",
+        question: "Qual é a capital do Brasil?",
+        answers: ["Brasília"]
+    },
+    {
+        category: "FUTEBOL",
+        question: "Quantos jogadores um time de futebol possui em campo no início da partida?",
+        answers: ["11", "onze"]
+    },
+    {
+        category: "POKÉMON",
+        question: "Qual Pokémon amarelo é conhecido por seus poderes elétricos e acompanha Ash?",
+        answers: ["Pikachu"]
+    },
+    {
+        category: "MATEMÁTICA",
+        question: "Quanto é 8 vezes 7?",
+        answers: ["56", "cinquenta e seis"]
+    },
+    {
+        category: "ANIMAIS",
+        question: "Qual é o maior animal terrestre vivo?",
+        answers: ["Elefante africano", "Elefante"]
+    },
+    {
+        category: "CONHECIMENTOS GERAIS",
+        question: "Qual objeto circular permite que um carro se movimente?",
+        answers: ["Roda", "Rodas"]
+    },
+    {
+        category: "ESPAÇO",
+        question: "Qual planeta é conhecido como planeta vermelho?",
+        answers: ["Marte"]
+    },
+    {
+        category: "FILMES",
+        question: "Qual é o nome do cowboy de Toy Story?",
+        answers: ["Woody"]
+    },
+    {
+        category: "GEOGRAFIA",
+        question: "Qual é o maior oceano do mundo?",
+        answers: ["Pacífico", "Oceano Pacífico"]
+    },
+    {
+        category: "FUTEBOL",
+        question: "Qual país venceu a Copa do Mundo de 2002?",
+        answers: ["Brasil"]
+    },
+    {
+        category: "MATEMÁTICA",
+        question: "Quanto é 100 dividido por 4?",
+        answers: ["25", "vinte e cinco"]
+    },
+    {
+        category: "ANIMAIS",
+        question: "Qual é o animal terrestre mais rápido?",
+        answers: ["Guepardo", "Chita"]
+    }
+];
+
+let scores = new Map();
+let answered = new Set();
+let deck = [];
+let current;
+let time = 30;
+let interval;
+let active = false;
+
+function normalize(text) {
+    return text
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toLowerCase()
+        .trim()
+        .replace(/\s+/g, " ");
+}
+
+function speak(text) {
+    if (!("speechSynthesis" in window)) return;
+
+    speechSynthesis.cancel();
+
+    const voice = new SpeechSynthesisUtterance(text);
+    voice.lang = "pt-BR";
+    voice.rate = 1;
+
+    speechSynthesis.speak(voice);
+}
+
+function startGame() {
+    document.getElementById("start").disabled = true;
+    nextQuestion();
+}
+
+function nextQuestion() {
+
+    if (deck.length === 0) {
+        deck = [...questions];
+
+        for (let i = deck.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [deck[i], deck[j]] = [deck[j], deck[i]];
+        }
+    }
+
+    current = deck.pop();
+
+    answered.clear();
+    time = 30;
+    active = true;
+
+    document.getElementById("question").textContent =
+        current.question;
+
+    document.getElementById("category").textContent =
+        current.category;
+
+    document.getElementById("feedback").textContent = "";
+
+    updateTimer();
+
+    speak(current.question);
+
+    clearInterval(interval);
+
+    interval = setInterval(() => {
+        time--;
+        updateTimer();
+
+        if (time <= 0) {
+            endQuestion();
+        }
+    }, 1000);
+}
+
+function updateTimer() {
+
+    const timer = document.getElementById("timer");
+    const bar = document.getElementById("bar");
+
+    timer.textContent = time;
+    bar.style.width = (time / 30 * 100) + "%";
+
+    timer.style.borderColor =
+        time <= 5 ? "#ff3344" : "#00eaff";
+
+    bar.style.background =
+        time <= 5 ? "#ff3344" : "#00eaff";
+}
+
+function sendAnswer() {
+
+    if (!active) return;
+
+    const name =
+        document.getElementById("username").value.trim();
+
+    const answer =
+        normalize(document.getElementById("answer").value);
+
+    document.getElementById("answer").value = "";
+
+    if (!name || !answer) return;
+
+    const player = normalize(name);
+
+    if (answered.has(player)) return;
+
+    if (current.answers.some(a => normalize(a) === answer)) {
+
+        answered.add(player);
+
+        const previous = scores.get(player);
+
+        scores.set(player, {
+            name: name,
+            points: (previous?.points || 0) + 10
+        });
+
+        document.getElementById("feedback").textContent =
+            "✅ " + name + " acertou! +10 pontos";
+
+        updateRanking();
+    }
+}
+
+function endQuestion() {
+
+    clearInterval(interval);
+    active = false;
+
+    document.getElementById("feedback").textContent =
+        "✅ Resposta: " + current.answers[0];
+
+    speak("A resposta correta é " + current.answers[0]);
+
+    setTimeout(nextQuestion, 5000);
+}
+
+function updateRanking() {
+
+    const sorted = [...scores.values()]
+        .sort((a, b) => b.points - a.points)
+        .slice(0, 10);
+
+    const ranking = document.getElementById("ranking");
+
+    ranking.replaceChildren();
+
+    sorted.forEach((player, index) => {
+
+        const row = document.createElement("div");
+        row.className = "player";
+
+        const name = document.createElement("span");
+        name.textContent = (index + 1) + "º " + player.name;
+
+        const points = document.createElement("strong");
+        points.textContent = player.points + " pts";
+
+        row.append(name, points);
+        ranking.appendChild(row);
+    });
+}
+
+document.getElementById("answer")
+    .addEventListener("keydown", event => {
+        if (event.key === "Enter") sendAnswer();
+    });
+
+</script>
+
+</body>
+</html>
