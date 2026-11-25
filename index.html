@@ -13,55 +13,75 @@
 body {
     margin: 0;
     font-family: Arial, sans-serif;
-    background: #050816;
+    background: #030510;
     color: white;
 }
 
-.container {
-    max-width: 460px;
+.live {
+    max-width: 480px;
     min-height: 100vh;
     margin: auto;
-    padding: 25px;
-    background: linear-gradient(160deg, #101b40, #050816);
+    padding: 20px;
+    background: radial-gradient(ellipse at top, #253477, #080b20 60%);
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.badge {
+    background: #ff1744;
+    padding: 8px 14px;
+    border-radius: 20px;
+    font-weight: bold;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    50% { opacity: .65; }
 }
 
 .logo {
     text-align: center;
-    font-size: 42px;
+    font-size: 48px;
     font-weight: 900;
+    margin: 25px 0 5px;
     color: #00eaff;
-    text-shadow: 0 0 25px #00eaff;
+    text-shadow: 0 0 25px #00aaff;
 }
 
 .subtitle {
     text-align: center;
-    color: #a6b6d9;
-    margin-bottom: 30px;
+    color: #b2c3ff;
+    margin-bottom: 25px;
 }
 
 .category {
     text-align: center;
-    color: #ffd700;
+    color: #ffdd44;
     font-weight: bold;
-    margin: 15px;
+    letter-spacing: 2px;
+    padding: 10px;
 }
 
 .timer {
-    width: 105px;
-    height: 105px;
-    border: 6px solid #00eaff;
-    border-radius: 50%;
+    width: 125px;
+    height: 125px;
+    margin: 15px auto;
     display: grid;
     place-items: center;
-    font-size: 42px;
-    font-weight: bold;
-    margin: 20px auto;
-    box-shadow: 0 0 25px #00eaff55;
+    border: 7px solid #00eaff;
+    border-radius: 50%;
+    font-size: 52px;
+    font-weight: 900;
+    box-shadow: 0 0 30px #00eaff55;
 }
 
 .progress {
-    height: 9px;
-    background: #283451;
+    height: 10px;
+    background: #ffffff22;
     border-radius: 20px;
     overflow: hidden;
 }
@@ -70,84 +90,165 @@ body {
     height: 100%;
     width: 100%;
     background: #00eaff;
-    transition: width 0.3s;
+    transition: width .4s;
 }
 
 .question {
-    min-height: 160px;
+    min-height: 170px;
     display: grid;
     place-items: center;
     text-align: center;
-    padding: 20px;
-    font-size: 27px;
-    font-weight: bold;
     background: #ffffff0c;
-    border: 1px solid #ffffff22;
-    border-radius: 20px;
-    margin-top: 25px;
+    border: 2px solid #5769aa;
+    border-radius: 24px;
+    padding: 20px;
+    margin-top: 20px;
+    font-size: 28px;
+    font-weight: bold;
 }
 
 .instruction {
     text-align: center;
-    color: #a6b6d9;
-    margin: 15px;
+    color: #b8ccff;
+    padding: 15px;
 }
 
-#feedback {
-    min-height: 50px;
+.feedback {
+    min-height: 60px;
     text-align: center;
-    color: #4dff88;
-    font-size: 22px;
+    color: #56ff99;
+    font-size: 23px;
     font-weight: bold;
+    padding: 10px;
+}
+
+.rankings {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
 }
 
 .ranking {
-    background: #ffffff08;
-    padding: 20px;
-    border-radius: 20px;
+    background: #ffffff0a;
+    border: 1px solid #ffffff22;
+    border-radius: 18px;
+    padding: 12px;
+    min-height: 240px;
 }
 
 .ranking h2 {
     text-align: center;
-    color: #ffd700;
+    font-size: 16px;
+    color: #ffdd44;
 }
 
 .player {
     display: flex;
     justify-content: space-between;
-    padding: 12px;
+    align-items: center;
+    gap: 5px;
+    padding: 10px 0;
     border-bottom: 1px solid #ffffff18;
+    font-size: 13px;
 }
 
-.controls {
-    margin-top: 25px;
-    padding-top: 20px;
-    border-top: 1px solid #ffffff22;
+.player span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
-input, button {
-    width: 100%;
-    padding: 13px;
-    margin-bottom: 10px;
+.player strong {
+    white-space: nowrap;
+}
+
+.empty {
+    color: #aab5d5;
+    text-align: center;
+    font-size: 13px;
+}
+
+.gift {
+    display: none;
+    position: fixed;
+    top: 25%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: min(90%, 400px);
+    background: linear-gradient(135deg, #8624dd, #ec238c);
+    border: 3px solid #ffdc70;
+    padding: 30px;
+    border-radius: 25px;
+    text-align: center;
+    font-size: 25px;
+    font-weight: bold;
+    z-index: 10;
+    box-shadow: 0 0 50px #ff49c8;
+    overflow-wrap: anywhere;
+}
+
+.gift.show {
+    display: block;
+    animation: giftAnimation .5s ease;
+}
+
+@keyframes giftAnimation {
+    from {
+        opacity: 0;
+        scale: .6;
+    }
+    to {
+        opacity: 1;
+        scale: 1;
+    }
+}
+
+button, input {
     border: none;
+    padding: 12px;
     border-radius: 10px;
-    font-size: 16px;
-}
-
-input {
-    background: #1c2948;
-    color: white;
+    font-size: 15px;
 }
 
 button {
-    background: #00eaff;
-    color: #050816;
-    font-weight: bold;
     cursor: pointer;
+    font-weight: bold;
+    background: #00eaff;
+    color: #051222;
 }
 
-button:disabled {
-    opacity: 0.4;
+#start {
+    display: block;
+    width: 100%;
+    margin: 20px auto;
+    padding: 18px;
+}
+
+#testPanel {
+    display: none;
+    background: #19213a;
+    padding: 18px;
+    margin-top: 20px;
+    border-radius: 15px;
+}
+
+#testPanel input,
+#testPanel button {
+    display: block;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+#testPanel input {
+    background: #303b60;
+    color: white;
+}
+
+.footer {
+    text-align: center;
+    padding: 20px;
+    color: #8999c2;
+    font-size: 12px;
 }
 
 </style>
@@ -155,12 +256,22 @@ button:disabled {
 
 <body>
 
-<div class="container">
+<div class="live">
+
+    <div class="header">
+        <span class="badge" id="status">● DEMONSTRAÇÃO</span>
+        <span id="round">RODADA 0</span>
+    </div>
 
     <div class="logo">QUIZ LIVE</div>
-    <div class="subtitle">O desafio dos inteligentes</div>
 
-    <div class="category" id="category">CONHECIMENTOS GERAIS</div>
+    <div class="subtitle">
+        Você consegue acertar?
+    </div>
+
+    <div class="category" id="category">
+        DESAFIO DE CONHECIMENTOS
+    </div>
 
     <div class="timer" id="timer">30</div>
 
@@ -169,175 +280,357 @@ button:disabled {
     </div>
 
     <div class="question" id="question">
-        Clique em iniciar para jogar!
+        Preparados para o desafio?
     </div>
 
     <div class="instruction">
-        💬 Escreva a resposta no chat!
+        💬 Responda pelo chat!
     </div>
 
-    <div id="feedback"></div>
+    <div class="feedback" id="feedback"></div>
 
-    <div class="ranking">
-        <h2>🏆 TOP 10</h2>
-        <div id="ranking">Aguardando jogadores...</div>
+    <div class="rankings">
+
+        <div class="ranking">
+            <h2>🧠 TOP 5 QUIZ</h2>
+            <div id="quizRanking" class="empty">
+                Aguardando jogadores
+            </div>
+        </div>
+
+        <div class="ranking">
+            <h2>🎁 TOP APOIADORES</h2>
+            <div id="giftRanking" class="empty">
+                Aguardando presentes
+            </div>
+        </div>
+
     </div>
 
-    <div class="controls">
-        <p>PAINEL DE TESTES</p>
+    <button id="start" onclick="startGame()">
+        ▶ INICIAR QUIZ
+    </button>
 
-        <button id="start" onclick="startGame()">
-            ▶ Iniciar Quiz
+    <div class="footer">
+        QUIZ LIVE • DESAFIO AO VIVO
+    </div>
+
+    <div id="testPanel">
+        <h3>Painel privado de testes</h3>
+
+        <input id="testName" placeholder="Nome">
+
+        <input id="testAnswer" placeholder="Resposta">
+
+        <button onclick="testAnswer()">
+            Simular comentário
         </button>
 
-        <input id="username" placeholder="Nome do jogador">
-        <input id="answer" placeholder="Resposta">
+        <input id="testGift" placeholder="Presente">
 
-        <button onclick="sendAnswer()">
-            Enviar resposta
+        <input id="testValue" type="number" min="1"
+        value="1" placeholder="Pontos do presente">
+
+        <button onclick="testGift()">
+            Simular presente
         </button>
+
+        <button onclick="toggleMusic()">
+            Ligar / desligar música
+        </button>
+
     </div>
 
 </div>
 
+<div class="gift" id="giftAlert"></div>
+
 <script>
 
 const questions = [
-    {
-        category: "GEOGRAFIA",
-        question: "Qual é a capital do Brasil?",
-        answers: ["Brasília"]
-    },
-    {
-        category: "FUTEBOL",
-        question: "Quantos jogadores um time de futebol possui em campo no início da partida?",
-        answers: ["11", "onze"]
-    },
-    {
-        category: "POKÉMON",
-        question: "Qual Pokémon amarelo é conhecido por seus poderes elétricos e acompanha Ash?",
-        answers: ["Pikachu"]
-    },
-    {
-        category: "MATEMÁTICA",
-        question: "Quanto é 8 vezes 7?",
-        answers: ["56", "cinquenta e seis"]
-    },
-    {
-        category: "ANIMAIS",
-        question: "Qual é o maior animal terrestre vivo?",
-        answers: ["Elefante africano", "Elefante"]
-    },
-    {
-        category: "CONHECIMENTOS GERAIS",
-        question: "Qual objeto circular permite que um carro se movimente?",
-        answers: ["Roda", "Rodas"]
-    },
-    {
-        category: "ESPAÇO",
-        question: "Qual planeta é conhecido como planeta vermelho?",
-        answers: ["Marte"]
-    },
-    {
-        category: "FILMES",
-        question: "Qual é o nome do cowboy de Toy Story?",
-        answers: ["Woody"]
-    },
-    {
-        category: "GEOGRAFIA",
-        question: "Qual é o maior oceano do mundo?",
-        answers: ["Pacífico", "Oceano Pacífico"]
-    },
-    {
-        category: "FUTEBOL",
-        question: "Qual país venceu a Copa do Mundo de 2002?",
-        answers: ["Brasil"]
-    },
-    {
-        category: "MATEMÁTICA",
-        question: "Quanto é 100 dividido por 4?",
-        answers: ["25", "vinte e cinco"]
-    },
-    {
-        category: "ANIMAIS",
-        question: "Qual é o animal terrestre mais rápido?",
-        answers: ["Guepardo", "Chita"]
-    }
+    ["GEOGRAFIA","Qual é a capital do Brasil?",["Brasília"]],
+    ["FUTEBOL","Qual país venceu a Copa do Mundo de 2002?",["Brasil"]],
+    ["MATEMÁTICA","Quanto é 8 vezes 7?",["56","cinquenta e seis"]],
+    ["POKÉMON","Qual Pokémon amarelo acompanha Ash?",["Pikachu"]],
+    ["ANIMAIS","Qual é o maior animal terrestre vivo?",["Elefante","Elefante africano","Elefante-da-savana"]],
+    ["ESPAÇO","Qual é o planeta vermelho?",["Marte"]],
+    ["FILMES","Qual é o nome do cowboy de Toy Story?",["Woody"]],
+    ["GEOGRAFIA","Qual é o maior oceano do mundo?",["Pacífico","Oceano Pacífico"]],
+    ["MATEMÁTICA","Quanto é 100 dividido por 4?",["25","vinte e cinco"]],
+    ["ANIMAIS","Qual é o animal terrestre mais rápido?",["Guepardo","Chita"]],
+    ["CONHECIMENTOS GERAIS","Qual objeto circular permite que um carro se movimente?",["Roda","Rodas"]],
+    ["ESPAÇO","Qual é o maior planeta do Sistema Solar?",["Júpiter"]],
+    ["FUTEBOL","Quantos jogadores cada equipe tem no início de uma partida de futebol de campo, se estiver completa?",["11","onze"]],
+    ["ANIMAIS","Qual animal é conhecido como o rei da selva?",["Leão"]],
+    ["GEOGRAFIA","Em qual país fica a Torre Eiffel?",["França"]],
+    ["MATEMÁTICA","Quanto é 12 vezes 12?",["144","cento e quarenta e quatro"]],
+    ["CIÊNCIAS","Qual gás os humanos precisam respirar para sobreviver?",["Oxigênio"]],
+    ["POKÉMON","Qual Pokémon evolui para Charizard?",["Charmeleon"]],
+    ["FILMES","Qual é o nome do ogro verde dos filmes da DreamWorks?",["Shrek"]],
+    ["GEOGRAFIA","Qual é a capital da Argentina?",["Buenos Aires"]],
+    ["MATEMÁTICA","Qual é a metade de 90?",["45","quarenta e cinco"]],
+    ["ANIMAIS","Qual animal possui o pescoço muito comprido e manchas?",["Girafa"]],
+    ["ESPAÇO","Qual estrela ilumina a Terra durante o dia?",["Sol","O Sol"]],
+    ["CONHECIMENTOS GERAIS","Quantos dias tem uma semana?",["7","sete"]],
+    ["CIÊNCIAS","Qual órgão bombeia o sangue pelo corpo?",["Coração"]],
+    ["FUTEBOL","Qual jogador brasileiro ficou conhecido como Rei do Futebol?",["Pelé"]],
+    ["MATEMÁTICA","Quanto é 9 vezes 9?",["81","oitenta e um"]],
+    ["ANIMAIS","Qual animal produz mel?",["Abelha","Abelhas"]],
+    ["GEOGRAFIA","Qual é a capital de Portugal?",["Lisboa"]],
+    ["ESPAÇO","Qual é o satélite natural da Terra?",["Lua","A Lua"]]
 ];
 
-let scores = new Map();
-let answered = new Set();
+const quizScores = new Map();
+const giftScores = new Map();
+const answered = new Set();
+
 let deck = [];
 let current;
 let time = 30;
-let interval;
+let round = 0;
 let active = false;
+let started = false;
+let interval;
+let deadline;
+let audio;
+let musicEnabled = true;
+let musicTimer;
+let musicGain;
+let musicIndex = 0;
+let giftTimer;
 
 function normalize(text) {
-    return text
+    return String(text)
         .normalize("NFD")
         .replace(/[\u0300-\u036f]/g, "")
         .toLowerCase()
         .trim()
+        .replace(/[.!?]+$/g, "")
         .replace(/\s+/g, " ");
 }
 
-function speak(text) {
+function speak(text, urgent = false) {
+
     if (!("speechSynthesis" in window)) return;
 
-    speechSynthesis.cancel();
-
     const voice = new SpeechSynthesisUtterance(text);
+    const voices = speechSynthesis.getVoices();
+
+    const ptVoices = voices.filter(v =>
+        /^pt[-_]BR$/i.test(v.lang)
+    );
+
+    const selected = ptVoices.find(v =>
+        /Antonio|Antônio|Daniel|Felipe|Male/i.test(v.name)
+    );
+
     voice.lang = "pt-BR";
-    voice.rate = 1;
+    voice.rate = urgent ? 1.17 : 1.08;
+    voice.pitch = 1.02;
+    voice.volume = 1;
+
+    if (selected) voice.voice = selected;
+
+    if (urgent) speechSynthesis.cancel();
+
+    voice.onstart = () => {
+        if (musicGain) musicGain.gain.value = 0.025;
+    };
+
+    voice.onend = voice.onerror = () => {
+        if (musicGain) musicGain.gain.value = 0.065;
+    };
 
     speechSynthesis.speak(voice);
 }
 
+function initAudio() {
+    if (!audio) {
+        const AudioContextClass =
+            window.AudioContext || window.webkitAudioContext;
+
+        if (!AudioContextClass) return;
+
+        audio = new AudioContextClass();
+
+        musicGain = audio.createGain();
+        musicGain.gain.value = 0.065;
+        musicGain.connect(audio.destination);
+    }
+
+    audio.resume().catch(() => {});
+}
+
+function tone(frequency, duration, volume, target, delay = 0) {
+
+    if (!audio || !target) return;
+
+    const oscillator = audio.createOscillator();
+    const gain = audio.createGain();
+    const start = audio.currentTime + delay;
+
+    oscillator.type = "sine";
+    oscillator.frequency.value = frequency;
+
+    gain.gain.setValueAtTime(0.001, start);
+
+    gain.gain.exponentialRampToValueAtTime(
+        volume, start + 0.015
+    );
+
+    gain.gain.exponentialRampToValueAtTime(
+        0.001, start + duration
+    );
+
+    oscillator.connect(gain);
+    gain.connect(target);
+
+    oscillator.start(start);
+    oscillator.stop(start + duration);
+}
+
+function effect(type) {
+
+    if (!audio) return;
+
+    const notes = type === "gift"
+        ? [523,659,784,1047]
+        : type === "correct"
+        ? [660,880,1047]
+        : [440];
+
+    notes.forEach((note, index) => {
+        tone(note, 0.20, 0.11,
+            audio.destination, index * 0.09);
+    });
+}
+
+function startMusic() {
+
+    if (!audio || musicTimer || !musicEnabled) return;
+
+    const notes = [
+        261.63, 329.63, 392, 329.63,
+        220, 261.63, 329.63, 261.63,
+        174.61, 220, 261.63, 220,
+        196, 246.94, 293.66, 246.94
+    ];
+
+    musicTimer = setInterval(() => {
+
+        const index = musicIndex++ % notes.length;
+
+        tone(notes[index], 0.22, 0.65, musicGain);
+
+        if (index % 4 === 0) {
+            tone(notes[index] / 2, 0.55, 0.5, musicGain);
+        }
+
+    }, 280);
+}
+
+function toggleMusic() {
+
+    musicEnabled = !musicEnabled;
+
+    if (musicEnabled) {
+        initAudio();
+        startMusic();
+    } else {
+        clearInterval(musicTimer);
+        musicTimer = null;
+    }
+}
+
 function startGame() {
-    document.getElementById("start").disabled = true;
+
+    if (started) return;
+
+    started = true;
+
+    initAudio();
+    startMusic();
+
+    document.getElementById("start").style.display = "none";
+
     nextQuestion();
 }
 
 function nextQuestion() {
 
     if (deck.length === 0) {
+
         deck = [...questions];
 
         for (let i = deck.length - 1; i > 0; i--) {
+
             const j = Math.floor(Math.random() * (i + 1));
+
             [deck[i], deck[j]] = [deck[j], deck[i]];
         }
     }
 
     current = deck.pop();
 
+    round++;
     answered.clear();
+
     time = 30;
     active = true;
+    deadline = Date.now() + 30000;
 
-    document.getElementById("question").textContent =
-        current.question;
+    document.getElementById("round").textContent =
+        "RODADA " + round;
 
     document.getElementById("category").textContent =
-        current.category;
+        current[0];
+
+    document.getElementById("question").textContent =
+        current[1];
 
     document.getElementById("feedback").textContent = "";
 
     updateTimer();
 
-    speak(current.question);
+    const introductions = [
+        "Valendo!",
+        "Bora para mais uma!",
+        "Atenção, galera!",
+        "Será que você sabe?",
+        "Preparados? Lá vai!"
+    ];
+
+    const intro = introductions[
+        Math.floor(Math.random() * introductions.length)
+    ];
+
+    speak(intro + " " + current[1], true);
 
     clearInterval(interval);
 
     interval = setInterval(() => {
-        time--;
+
+        const remaining = Math.max(
+            0, Math.ceil((deadline - Date.now()) / 1000)
+        );
+
+        if (remaining === time) return;
+
+        time = remaining;
+
         updateTimer();
 
-        if (time <= 0) {
-            endQuestion();
+        if (time === 5) {
+            speak("Atenção! Últimos cinco segundos!", true);
         }
-    }, 1000);
+
+        if (time > 0 && time <= 5) {
+            effect("tick");
+        }
+
+        if (time === 0) endQuestion();
+
+    }, 100);
 }
 
 function updateTimer() {
@@ -346,94 +639,214 @@ function updateTimer() {
     const bar = document.getElementById("bar");
 
     timer.textContent = time;
+
     bar.style.width = (time / 30 * 100) + "%";
 
-    timer.style.borderColor =
-        time <= 5 ? "#ff3344" : "#00eaff";
+    const color = time <= 5
+        ? "#ff3344"
+        : time <= 10
+        ? "#ffae00"
+        : "#00eaff";
 
-    bar.style.background =
-        time <= 5 ? "#ff3344" : "#00eaff";
+    timer.style.borderColor = color;
+    bar.style.background = color;
 }
 
-function sendAnswer() {
+function addPoints(map, name, points) {
 
-    if (!active) return;
+    const key = normalize(name);
+    const previous = map.get(key);
 
-    const name =
-        document.getElementById("username").value.trim();
+    map.set(key, {
+        name: name,
+        points: (previous?.points || 0) + points
+    });
+}
 
-    const answer =
-        normalize(document.getElementById("answer").value);
+function receiveComment(name, message) {
 
-    document.getElementById("answer").value = "";
+    if (!active || Date.now() >= deadline) return;
 
-    if (!name || !answer) return;
+    name = String(name).trim().slice(0, 40);
 
-    const player = normalize(name);
+    if (!name) return;
 
-    if (answered.has(player)) return;
+    const key = normalize(name);
+    const answer = normalize(message);
 
-    if (current.answers.some(a => normalize(a) === answer)) {
+    if (answered.has(key)) return;
 
-        answered.add(player);
+    const correct = current[2].some(a =>
+        normalize(a) === answer
+    );
 
-        const previous = scores.get(player);
+    if (!correct) return;
 
-        scores.set(player, {
-            name: name,
-            points: (previous?.points || 0) + 10
-        });
+    answered.add(key);
 
-        document.getElementById("feedback").textContent =
-            "✅ " + name + " acertou! +10 pontos";
+    addPoints(quizScores, name, 10);
 
-        updateRanking();
+    document.getElementById("feedback").textContent =
+        "🔥 " + name + " acertou! +10";
+
+    effect("correct");
+
+    if (!speechSynthesis.speaking && time > 5) {
+        speak("Boa, " + name + "! Você acertou!");
     }
+
+    updateRankings();
+}
+
+function receiveGift(name, gift, value) {
+
+    name = String(name).trim().slice(0, 40);
+    gift = String(gift).trim().slice(0, 40);
+
+    if (!name || !gift) return;
+
+    const points = Math.max(
+        1, Math.min(1000000, Math.floor(Number(value) || 1))
+    );
+
+    addPoints(giftScores, name, points);
+
+    const alert = document.getElementById("giftAlert");
+
+    alert.textContent =
+        "🎁 " + name + " enviou " + gift + "!";
+
+    alert.classList.add("show");
+
+    clearTimeout(giftTimer);
+
+    giftTimer = setTimeout(() => {
+        alert.classList.remove("show");
+    }, 4000);
+
+    effect("gift");
+
+    speak(
+        "Muito obrigado pelo presente, " +
+        name + "! Valeu pelo apoio!"
+    );
+
+    updateRankings();
 }
 
 function endQuestion() {
 
     clearInterval(interval);
+
     active = false;
 
+    const correct = current[2][0];
+
     document.getElementById("feedback").textContent =
-        "✅ Resposta: " + current.answers[0];
+        "✅ RESPOSTA: " + correct;
 
-    speak("A resposta correta é " + current.answers[0]);
+    effect("correct");
 
-    setTimeout(nextQuestion, 5000);
+    if (answered.size === 0) {
+
+        speak(
+            "Nossa! Ninguém acertou! A resposta correta é " +
+            correct, true
+        );
+
+    } else {
+
+        speak(
+            "Tempo encerrado! A resposta correta é " +
+            correct + "! Parabéns para quem acertou!",
+            true
+        );
+    }
+
+    setTimeout(nextQuestion, 6500);
 }
 
-function updateRanking() {
+function renderRanking(map, id) {
 
-    const sorted = [...scores.values()]
-        .sort((a, b) => b.points - a.points)
-        .slice(0, 10);
+    const sorted = [...map.values()]
+        .sort((a,b) => b.points - a.points)
+        .slice(0,5);
 
-    const ranking = document.getElementById("ranking");
+    if (!sorted.length) return;
 
-    ranking.replaceChildren();
+    const element = document.getElementById(id);
 
-    sorted.forEach((player, index) => {
+    element.className = "";
+    element.replaceChildren();
+
+    const medals = ["🥇","🥈","🥉","4º","5º"];
+
+    sorted.forEach((player,index) => {
 
         const row = document.createElement("div");
         row.className = "player";
 
         const name = document.createElement("span");
-        name.textContent = (index + 1) + "º " + player.name;
+
+        name.textContent =
+            medals[index] + " " + player.name;
 
         const points = document.createElement("strong");
-        points.textContent = player.points + " pts";
 
-        row.append(name, points);
-        ranking.appendChild(row);
+        points.textContent = player.points;
+
+        row.append(name,points);
+        element.appendChild(row);
+
     });
 }
 
-document.getElementById("answer")
-    .addEventListener("keydown", event => {
-        if (event.key === "Enter") sendAnswer();
-    });
+function updateRankings() {
+
+    renderRanking(quizScores,"quizRanking");
+    renderRanking(giftScores,"giftRanking");
+}
+
+function testAnswer() {
+
+    receiveComment(
+        document.getElementById("testName").value,
+        document.getElementById("testAnswer").value
+    );
+
+    document.getElementById("testAnswer").value = "";
+}
+
+function testGift() {
+
+    receiveGift(
+        document.getElementById("testName").value,
+        document.getElementById("testGift").value,
+        document.getElementById("testValue").value
+    );
+}
+
+document.addEventListener("keydown", event => {
+
+    if (event.ctrlKey && event.shiftKey &&
+        event.key.toLowerCase() === "p") {
+
+        event.preventDefault();
+
+        const panel =
+            document.getElementById("testPanel");
+
+        panel.style.display =
+            panel.style.display === "block"
+            ? "none"
+            : "block";
+    }
+
+});
+
+if (new URLSearchParams(location.search).get("teste") === "1") {
+    document.getElementById("testPanel").style.display = "block";
+}
 
 </script>
 
