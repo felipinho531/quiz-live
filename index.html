@@ -258,7 +258,7 @@ button {
         DESAFIO DE CONHECIMENTOS
     </div>
 
-    <div class="timer" id="timer">30</div>
+    <div class="timer" id="timer">15</div>
 
     <div class="progress">
         <div id="bar"></div>
@@ -343,7 +343,7 @@ const answered = new Set();
 let deck = [];
 let current;
 let lastQuestion;
-let time = 30;
+let time = 15;
 let round = 0;
 let active = false;
 let started = false;
@@ -561,7 +561,7 @@ function nextQuestion() {
 
     time = 30;
     active = true;
-    deadline = Date.now() + 30000;
+    deadline = Date.now() + 15000;
 
     $("round").textContent = "RODADA " + round;
 
@@ -618,7 +618,7 @@ function updateTimer() {
 
     $("timer").textContent = time;
 
-    $("bar").style.width = (time/30*100) + "%";
+    $("bar").style.width = (time/15*100) + "%";
 
     const color = time <= 5
         ? "#ff3344"
