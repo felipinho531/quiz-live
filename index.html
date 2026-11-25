@@ -1342,6 +1342,33 @@ questionAnimation.observe(questionBox, {
 });
 
 </script>
+<script>
+const iniciarRodadaAnterior = nextQuestion;
+
+nextQuestion = async function() {
+    await iniciarRodadaAnterior();
+    time = 15;
+    deadline = Date.now() + 15000;
+    updateTimer();
+};
+
+updateTimer = function() {
+    $("timer").textContent = time;
+    $("bar").style.width = (time / 15 * 100) + "%";
+
+    const color = time <= 5
+        ? "#ff3344"
+        : time <= 10
+        ? "#ffae00"
+        : "#00eaff";
+
+    $("timer").style.borderColor = color;
+    $("bar").style.background = color;
+};
+
+time = 15;
+updateTimer();
+</script>
     
 </body>
 </html>
