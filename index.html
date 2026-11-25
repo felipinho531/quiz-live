@@ -1797,6 +1797,115 @@ async function iniciarModoVideo() {
     opacity: 0.6;
 }
 </style>
+<style>
+body:has(#modoVideo[style*="flex"]) {
+    overflow: hidden;
+    background: #050510;
+}
+
+body:has(#modoVideo[style*="flex"]) > *:not(#modoVideo):not(script):not(style) {
+    visibility: hidden;
+}
+
+#modoVideo {
+    visibility: visible !important;
+}
+
+#videoPergunta {
+    font-size: clamp(23px, 4vh, 38px);
+}
+
+#videoTempo {
+    font-size: 65px;
+    min-height: 80px;
+}
+
+#linhaVideo {
+    width: 90%;
+    height: 12px;
+    border-radius: 20px;
+    background: #ffffff20;
+    overflow: hidden;
+    margin: 10px auto;
+}
+
+#linhaProgresso {
+    width: 100%;
+    height: 100%;
+    border-radius: 20px;
+    background: #00ff88;
+}
+
+#videoResposta {
+    color: #50ff92;
+    font-size: 32px;
+    font-weight: bold;
+}
+</style>
+
+<script>
+const tempoVideo = document.getElementById("videoTempo");
+
+tempoVideo.insertAdjacentHTML(
+    "afterend",
+    '<div id="linhaVideo"><div id="linhaProgresso"></div></div>'
+);
+
+const linhaVideo = document.getElementById("linhaVideo");
+const linhaProgresso = document.getElementById("linhaProgresso");
+
+let animacaoLinha;
+
+linhaVideo.style.display = "none";
+
+new MutationObserver(() => {
+    const numero = Number(tempoVideo.textContent);
+
+    if (numero === 5) {
+
+        linhaVideo.style.display = "block";
+
+        if (animacaoLinha) animacaoLinha.cancel();
+
+        animacaoLinha = linhaProgresso.animate([
+            {width:"100%", background:"#00ff88"},
+            {width:"40%", background:"#ffdf00"},
+            {width:"0%", background:"#ff3030"}
+        ], {
+            duration: 5000,
+            easing: "linear",
+            fill: "forwards"
+        });
+
+    } else if (numero < 1 || Number.isNaN(numero)) {
+
+        linhaVideo.style.display = "none";
+
+        if (animacaoLinha) animacaoLinha.cancel();
+    }
+}).observe(tempoVideo, {
+    childList: true,
+    characterData: true,
+    subtree: true
+});
+
+const respostaVideo = document.getElementById("videoResposta");
+
+new MutationObserver(() => {
+    if (respostaVideo.textContent.trim()) {
+        respostaVideo.animate([
+            {opacity:0, transform:"scale(0.5)"},
+            {opacity:1, transform:"scale(1.15)"},
+            {opacity:1, transform:"scale(1)"}
+        ], {
+            duration: 500
+        });
+    }
+}).observe(respostaVideo, {
+    childList: true,
+    subtree: true
+});
+</script>
     
 </body>
 </html>
