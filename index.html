@@ -1906,6 +1906,264 @@ new MutationObserver(() => {
     subtree: true
 });
 </script>
+<style>
+#videoCategoria:empty {
+    display: none;
+}
+
+#gravarQuiz {
+    position: fixed;
+    top: 60px;
+    right: 10px;
+    z-index: 9999;
+    background: #ff304f;
+    color: white;
+    padding: 12px 18px;
+    border: none;
+    border-radius: 10px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+body.gravandoQuiz #modoVideo button {
+    display: none !important;
+}
+
+body.gravandoQuiz #modoVideo {
+    border-radius: 0;
+    box-shadow: none;
+}
+
+#videoPergunta {
+    font-weight: 800;
+}
+
+#videoResposta {
+    text-shadow: 0 0 20px #00ff88;
+}
+</style>
+
+<button id="gravarQuiz" onclick="gravarVideoQuiz()">
+    🔴 Gravar vídeo
+</button>
+
+<script>
+let audioQuizVideo;
+let musicaQuizVideo;
+let gravadorQuiz;
+let capturaQuiz;
+let partesQuiz = [];
+
+function somQuizVideo(freq, duracao, volume = 0.04) {
+    if (!audioQuizVideo) {
+        audioQuizVideo = new (
+            window.AudioContext ||
+            window.webkitAudioContext
+        )();
+    }
+
+    audioQuizVideo.resume();
+
+    const oscilador = audioQuizVideo.createOscillator();
+    const ganho = audioQuizVideo.createGain();
+
+    oscilador.type = "sine";
+    oscilador.frequency.value = freq;
+
+    ganho.gain.setValueAtTime(
+        volume, audioQuizVideo.currentTime
+    );
+
+    ganho.gain.exponentialRampToValueAtTime(
+        0.001,
+        audioQuizVideo.currentTime + duracao
+    );
+
+    oscilador.connect(ganho);
+    ganho.connect(audioQuizVideo.destination);
+
+    oscilador.start();
+    oscilador.stop(
+        audioQuizVideo.currentTime + duracao
+    );
+}
+
+function iniciarMusicaQuiz() {
+    pararMusicaQuiz();
+
+    const notas = [
+        261.63, 329.63, 392,
+        329.63, 293.66, 349.23,
+        440, 349.23
+    ];
+
+    let posicao = 0;
+
+    musicaQuizVideo = setInterval(() => {
+        somQuizVideo(
+            notas[posicao % notas.length],
+            0.3,
+            0.018
+        );
+
+        posicao++;
+    }, 320);
+}
+
+function pararMusicaQuiz() {
+    clearInterval(musicaQuizVideo);
+}
+
+new MutationObserver(() => {
+    const valor = document
+        .getElementById("videoTempo")
+        .textContent.trim();
+
+    if (/^[1-5]$/.test(valor)) {
+        somQuizVideo(
+            valor === "1" ? 900 : 600,
+            0.12
+        );
+    }
+
+    if (valor === "✅") {
+        somQuizVideo(523, 0.2);
+
+        setTimeout(() =>
+            somQuizVideo(659, 0.2), 150
+        );
+
+        setTimeout(() =>
+            somQuizVideo(784, 0.4), 300
+        );
+    }
+}).observe(
+    document.getElementById("videoTempo"),
+    {
+        childList: true,
+        subtree: true,
+        characterData: true
+    }
+);
+
+const iniciarVideoAnterior = iniciarModoVideo;
+
+iniciarModoVideo = async function() {
+    iniciarMusicaQuiz();
+
+    try {
+        await iniciarVideoAnterior();
+    } finally {
+        pararMusicaQuiz();
+    }
+};
+
+async function gravarVideoQuiz() {
+
+    if (!navigator.mediaDevices?.getDisplayMedia ||
+        !window.MediaRecorder) {
+
+        alert("Este navegador não suporta a gravação.");
+        return;
+    }
+
+    try {
+        capturaQuiz = await navigator.mediaDevices
+            .getDisplayMedia({
+                video: {
+                    frameRate: 30
+                },
+                audio: true
+            });
+
+        partesQuiz = [];
+
+        const formato = [
+            "video/webm;codecs=vp9,opus",
+            "video/webm;codecs=vp8,opus",
+            "video/webm"
+        ].find(tipo =>
+            MediaRecorder.isTypeSupported(tipo)
+        );
+
+        gravadorQuiz = formato
+            ? new MediaRecorder(capturaQuiz, {
+                mimeType: formato
+            })
+            : new MediaRecorder(capturaQuiz);
+
+        gravadorQuiz.ondataavailable = evento => {
+            if (evento.data.size > 0) {
+                partesQuiz.push(evento.data);
+            }
+        };
+
+        gravadorQuiz.onstop = () => {
+            const arquivo = new Blob(partesQuiz, {
+                type: gravadorQuiz.mimeType
+            });
+
+            const url = URL.createObjectURL(arquivo);
+            const link = document.createElement("a");
+
+            link.href = url;
+            link.download =
+                "QuizLive-" + Date.now() + ".webm";
+
+            link.click();
+
+            capturaQuiz.getTracks().forEach(
+                track => track.stop()
+            );
+
+            setTimeout(() =>
+                URL.revokeObjectURL(url), 5000
+            );
+
+            document.body.classList.remove(
+                "gravandoQuiz"
+            );
+        };
+
+        capturaQuiz.getVideoTracks()[0]
+            .addEventListener("ended", () => {
+                if (gravadorQuiz.state !== "inactive") {
+                    gravadorQuiz.stop();
+                }
+            });
+
+        document.body.classList.add("gravandoQuiz");
+
+        gravadorQuiz.start();
+
+        await iniciarModoVideo();
+
+        await new Promise(resolve =>
+            setTimeout(resolve, 1500)
+        );
+
+        if (gravadorQuiz.state !== "inactive") {
+            gravadorQuiz.stop();
+        }
+
+    } catch (erro) {
+        pararMusicaQuiz();
+
+        if (gravadorQuiz &&
+            gravadorQuiz.state !== "inactive") {
+            gravadorQuiz.stop();
+        }
+
+        capturaQuiz?.getTracks().forEach(
+            track => track.stop()
+        );
+
+        document.body.classList.remove("gravandoQuiz");
+
+        alert("Gravação cancelada ou indisponível.");
+    }
+}
+</script>
     
 </body>
 </html>
